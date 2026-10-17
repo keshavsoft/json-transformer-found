@@ -1,0 +1,29 @@
+{
+    "STOCKITEM": [
+        {
+            "metadata": {
+                "type": "Batch",
+                "name": "Navratan-Rs.1210/-",
+                "reservedname": ""
+            },
+            "name": {
+                "type": "String",
+                "value": "Navratan-Rs.1210/-"
+            },
+            "parent": {
+                "type": "String",
+                "value": "0.09/30mm"
+            },
+            "godownname": {
+                "type": "String",
+                "value": "Main Location"
+            },
+            "closingbalance": {
+                "type": "Quantity",
+                "value": "-9.250 kgs"
+            }
+        }
+    ],
+    "@_ISMSTDEPTYPE": "Yes",
+    "@_MSTDEPTYPE": "512"
+}
