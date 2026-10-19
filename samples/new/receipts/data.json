@@ -1,21 +1,26 @@
 {
     "transform": {
-        "STOCKITEM": {
-            "alterKey": "StockItems",
+        "Receipts": {
+            "alterKey": "Receipts",
             "valueType": "array"
         }
     },
-    "StockItems": {
+    "Receipts": {
         "transform": {
-            "@_NAME": {
-                "alterKey": "Name"
+            "date": {
+                "valueKey": "value"
             },
-            "@_RESERVEDNAME": {
-                "alterKey": "ReserveName"
+            "ledgername": {
+                "valueKey": "value"
             },
-            "BASEUNITS": {
-                "alterKey": "Units",
-                "valueKey": "#text"
+            "vouchernumber": {
+                "valueKey": "value"
+            },
+            "isdeemedpositive": {
+                "valueKey": "value"
+            },
+            "amount": {
+                "valueKey": "value"
             }
         }
     }
