@@ -1,11 +1,10 @@
 {
   "name": "json-transformer-found",
   "version": "1.3.1",
-  "description": "Pure JSON Specification Compiler with jsonToSpec namespace: (structure, data) -> Spec JSON",
+  "description": "Transform source JSON with declarative JSON instructions",
   "main": "./src/index.js",
   "module": "./src/index.js",
   "files": [
-    "index.js",
     "src",
     "docs",
     "samples",
@@ -16,19 +15,20 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "sample": "node ./samples/new/receipts/index.js",
+    "sample:stock-items": "node ./samples/new/batches/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/keshavsoft/json-transformer-found.git"
   },
   "keywords": [
-    "json-transformer-found",
-    "json-to-dom",
-    "template",
-    "compiler",
-    "spec",
-    "declarative-ui"
+    "json-transformer",
+    "json",
+    "transform",
+    "mapping",
+    "declarative"
   ],
   "author": "KeshavSoft",
   "license": "MIT",

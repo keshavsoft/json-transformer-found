@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1117">
+  <meta name="description" content="Walk through the real receipt source and recipe files and see how V3 creates the output JSON.">
+  <title>Receipt Walkthrough — JSON Transformer</title>
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">J→</span><span>JSON Transformer</span></a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="index.html">Overview</a>
+        <a href="v3.html">V3 engine</a>
+        <a href="receipts.html" aria-current="page">Receipt tour</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="page-hero">
+      <div class="eyebrow">Concrete example · samples/new/receipts</div>
+      <h1>Why does the result have <span class="accent">one receipt?</span></h1>
+      <p class="lede">The answer is in the two JSON files. The source contains two root collections, but the recipe names only one. Then the nested rules unwrap a handful of fields from that one selected record.</p>
+      <div class="stat-row">
+        <div class="stat"><strong>2</strong><span>root collections in source</span></div>
+        <div class="stat"><strong>1</strong><span>root key selected by recipe</span></div>
+        <div class="stat"><strong>1</strong><span>record in selected collection</span></div>
+      </div>
+    </section>
+
+    <div class="page-content">
+      <article class="article">
+        <section id="source">
+          <h2>1. Read the source</h2>
+          <p><span class="path">samples/new/receipts/structure.json</span> is passed as the first argument. Its root has a one-record <code>Receipts</code> array and a separate <code>Receipts1</code> array with 916 records.</p>
+          <div class="code-card">
+            <div class="code-label"><span>Excerpt · first selected record</span><span>source JSON</span></div>
+            <pre><code>{
+  <span class="token-key">"Receipts"</span>: [
+    {
+      <span class="token-key">"metadata"</span>: { <span class="token-key">"type"</span>: <span class="token-string">"Ledger Entry"</span>, <span class="token-key">"name"</span>: <span class="token-string">"Phonepe Business (Axis)"</span> },
+      <span class="token-key">"date"</span>: { <span class="token-key">"type"</span>: <span class="token-string">"Date"</span>, <span class="token-key">"value"</span>: <span class="token-string">"20260401"</span> },
+      <span class="token-key">"ledgername"</span>: { <span class="token-key">"type"</span>: <span class="token-string">"String"</span>, <span class="token-key">"value"</span>: <span class="token-string">"Phonepe Business (Axis)"</span> },
+      <span class="token-key">"vouchernumber"</span>: { <span class="token-key">"type"</span>: <span class="token-string">"String"</span>, <span class="token-key">"value"</span>: <span class="token-string">"1"</span> },
+      <span class="token-key">"isdeemedpositive"</span>: { <span class="token-key">"type"</span>: <span class="token-string">"Logical"</span>, <span class="token-key">"value"</span>: <span class="token-number">false</span> },
+      <span class="token-key">"amount"</span>: { <span class="token-key">"type"</span>: <span class="token-string">"Amount"</span>, <span class="token-key">"value"</span>: <span class="token-string">"1020.00"</span> },
+      <span class="token-key">"parentvouchernumber"</span>: { <span class="token-key">"value"</span>: <span class="token-string">"1"</span> },
+      <span class="token-key">"parentvoucherdate"</span>: { <span class="token-key">"value"</span>: <span class="token-string">"20260401"</span> }
+    }
+  ],
+  <span class="token-key">"Receipts1"</span>: [ <span class="token-muted">… 916 records</span> ]
+}</code></pre>
+          </div>
+        </section>
+
+        <section id="recipe">
+          <h2>2. Read the recipe</h2>
+          <p><span class="path">samples/new/receipts/data.json</span> is passed as the second argument. At the root, its transform map has only the key <code>Receipts</code>. The nested <code>Receipts</code> recipe then selects five fields from each item.</p>
+          <div class="code-card">
+            <div class="code-label"><span>Full recipe</span><span>instruction JSON</span></div>
+            <pre><code>{
+  <span class="token-key">"transform"</span>: {
+    <span class="token-key">"Receipts"</span>: {
+      <span class="token-key">"alterKey"</span>: <span class="token-string">"Receipts"</span>,
+      <span class="token-key">"valueType"</span>: <span class="token-string">"array"</span>
+    }
+  },
+  <span class="token-key">"Receipts"</span>: {
+    <span class="token-key">"transform"</span>: {
+      <span class="token-key">"date"</span>: { <span class="token-key">"valueKey"</span>: <span class="token-string">"value"</span> },
+      <span class="token-key">"ledgername"</span>: { <span class="token-key">"valueKey"</span>: <span class="token-string">"value"</span> },
+      <span class="token-key">"vouchernumber"</span>: { <span class="token-key">"valueKey"</span>: <span class="token-string">"value"</span> },
+      <span class="token-key">"isdeemedpositive"</span>: { <span class="token-key">"valueKey"</span>: <span class="token-string">"value"</span> },
+      <span class="token-key">"amount"</span>: { <span class="token-key">"valueKey"</span>: <span class="token-string">"value"</span> }
+    }
+  }
+}</code></pre>
+          </div>
+        </section>
+
+        <section id="trace">
+          <h2>3. Trace the transformation</h2>
+          <div class="step-list">
+            <div class="step-row"><b>01</b><p><strong>Select the root key.</strong> The executor walks the source root. <code>Receipts</code> matches the transform map; <code>Receipts1</code> does not, so its 916 records never enter the result.</p></div>
+            <div class="step-row"><b>02</b><p><strong>Keep the collection as an array.</strong> <code>alterKey</code> keeps the name <code>Receipts</code>. The source is already an array, so <code>valueType: "array"</code> leaves it as-is.</p></div>
+            <div class="step-row"><b>03</b><p><strong>Visit the one item.</strong> Array traversal passes the nested receipt recipe to the item object.</p></div>
+            <div class="step-row"><b>04</b><p><strong>Unwrap selected values.</strong> Each selected child object is reduced to its <code>value</code> property. The other source fields are omitted.</p></div>
+          </div>
+          <div class="mini-flow">
+            <span>Receipts</span><i>→ select</i><span>array of 1</span><i>→ map item</i><span>5 fields</span><i>→ unwrap</i><span>result</span>
+          </div>
+        </section>
+
+        <section id="result">
+          <h2>4. See the result</h2>
+          <div class="code-card">
+            <div class="code-label"><span>Output from the selected source record</span><span>result JSON</span></div>
+            <pre><code>{
+  <span class="token-key">"Receipts"</span>: [
+    {
+      <span class="token-key">"date"</span>: <span class="token-string">"20260401"</span>,
+      <span class="token-key">"ledgername"</span>: <span class="token-string">"Phonepe Business (Axis)"</span>,
+      <span class="token-key">"vouchernumber"</span>: <span class="token-string">"1"</span>,
+      <span class="token-key">"isdeemedpositive"</span>: <span class="token-number">false</span>,
+      <span class="token-key">"amount"</span>: <span class="token-string">"1020.00"</span>
+    }
+  ]
+}</code></pre>
+          </div>
+          <p>The amount remains a string because V3 extracts values without converting them. The boolean remains a boolean. Fields such as <code>metadata</code> and the parent voucher details are absent because the nested transform map does not name them.</p>
+        </section>
+
+        <section id="stock-items">
+          <h2>A second sample: StockItems</h2>
+          <p>The <span class="path">samples/new/batches</span> recipe selects <code>STOCKITEM</code>, renames it to <code>StockItems</code>, and maps three fields per row. It changes <code>@_NAME</code> to <code>Name</code>, <code>@_RESERVEDNAME</code> to <code>ReserveName</code>, and extracts <code>#text</code> from <code>BASEUNITS</code> as <code>Units</code>.</p>
+          <div class="code-card">
+            <div class="code-label"><span>Representative first row</span><span>result JSON</span></div>
+            <pre><code>{
+  <span class="token-key">"Name"</span>: <span class="token-string">"0.09/30mm"</span>,
+  <span class="token-key">"ReserveName"</span>: <span class="token-string">""</span>,
+  <span class="token-key">"Units"</span>: <span class="token-string">"kgs"</span>
+}</code></pre>
+          </div>
+          <p>The source has 1,529 stock items. Fields such as <code>HASMFGDATE</code> and <code>BATCHALLOCATIONS.LIST</code> are not in this recipe, so they are omitted.</p>
+          <div class="callout">
+            <div class="icon" aria-hidden="true">i</div>
+            <p><strong>Sample folder note:</strong> <code>samples/new/reports</code> currently contains the same StockItems-shaped source and recipe; it is not a distinct reports transformation yet.</p>
+          </div>
+        </section>
+      </article>
+
+      <aside class="toc" aria-label="On this page">
+        <h2>Walkthrough</h2>
+        <a href="#source">1 · Source JSON</a>
+        <a href="#recipe">2 · Recipe JSON</a>
+        <a href="#trace">3 · Trace it</a>
+        <a href="#result">4 · Result JSON</a>
+        <a href="#stock-items">StockItems sample</a>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="wrap footer">
+    <span>Receipt walkthrough · actual sample shape</span>
+    <span><a href="index.html">Overview</a> · <a href="v3.html">V3 engine</a></span>
+  </footer>
+</body>
+</html>

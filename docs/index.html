@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1117">
+  <meta name="description" content="A visual guide to the JSON Transformer: one source JSON, one JSON recipe, and the V3 transformation flow.">
+  <title>JSON Transformer — Start Here</title>
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">J→</span><span>JSON Transformer</span></a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Overview</a>
+        <a href="v3.html">V3 engine</a>
+        <a href="receipts.html">Receipt tour</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">Start here · source + recipe</div>
+          <h1>Two JSONs.<br><span class="accent">One clear result.</span></h1>
+          <p class="lede">This project reads a JSON value, follows a second JSON document of instructions, and returns a reshaped value. The V3 engine is small enough to follow from the public function down to each directive.</p>
+          <div class="actions">
+            <a class="button primary" href="receipts.html">Follow the receipt example <span aria-hidden="true">&nbsp;→</span></a>
+            <a class="button" href="v3.html">Explore the V3 engine</a>
+          </div>
+        </div>
+
+        <div class="flow-board" aria-label="Source and recipe flow into the V3 transformer and produce a result">
+          <div class="flow-caption"><span>The whole idea</span><span>transform(source, recipe)</span></div>
+          <div class="flow-row">
+            <div class="flow-stack">
+              <div class="flow-node source"><strong>Source JSON</strong><small>The incoming fields and values</small></div>
+              <div class="flow-node recipe"><strong>Recipe JSON</strong><small>Which fields to keep and shape</small></div>
+            </div>
+            <div class="arrow" aria-hidden="true">→</div>
+            <div class="flow-node engine"><strong>V3</strong><small>walk · match · reshape</small></div>
+            <div class="arrow" aria-hidden="true">→</div>
+            <div class="flow-node output"><strong>Result JSON</strong><small>The selected output shape</small></div>
+          </div>
+          <div class="flow-foot"><span>Source supplies the values</span><span>Recipe supplies the rules</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Give each JSON one job.</h2>
+          <p>The current sample filenames are historical. Read them by role: <code>structure.json</code> is the source, while <code>data.json</code> is the recipe.</p>
+        </div>
+        <div class="grid two">
+          <article class="code-card">
+            <div class="code-label"><span>Source field</span><span>structure.json</span></div>
+            <pre><code>{
+  <span class="token-key">"date"</span>: {
+    <span class="token-key">"type"</span>: <span class="token-string">"Date"</span>,
+    <span class="token-key">"value"</span>: <span class="token-string">"20260401"</span>
+  }
+}</code></pre>
+          </article>
+          <article class="code-card">
+            <div class="code-label"><span>Recipe rule</span><span>data.json</span></div>
+            <pre><code>{
+  <span class="token-key">"transform"</span>: {
+    <span class="token-key">"date"</span>: {
+      <span class="token-key">"valueKey"</span>: <span class="token-string">"value"</span>
+    }
+  }
+}</code></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Follow the data through V3.</h2>
+          <p>The engine starts at <code>src/index.js</code> and currently routes into <code>src/v3</code>. Its behavior is easiest to understand in three passes.</p>
+        </div>
+        <div class="steps">
+          <article class="step"><h3>Choose the shape</h3><p>Traversal dispatches by the source value: arrays go to array traversal, objects go to object traversal, and primitive values pass through.</p></article>
+          <article class="step"><h3>Match source keys</h3><p>At a transformed object level, V3 loops over source keys and emits the ones named by the recipe’s <code>transform</code> map.</p></article>
+          <article class="step"><h3>Apply each rule</h3><p>For each match, V3 can rename the key, recurse, wrap the value as an array, and extract a nested value.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Pick a path through the repo.</h2>
+          <p>Each page is built around the actual source files and samples in this checkout.</p>
+        </div>
+        <div class="grid three">
+          <article class="card">
+            <div class="tag">01 · example first</div>
+            <h3>Receipt transformation</h3>
+            <p>See exactly why the receipt result has one item, which input fields survive, and how <code>valueKey</code> unwraps them.</p>
+            <a class="card-link" href="receipts.html">Open the walkthrough →</a>
+          </article>
+          <article class="card">
+            <div class="tag">02 · source code</div>
+            <h3>V3 engine map</h3>
+            <p>Trace the function call through traversal and execution, with the real directive order and edge cases.</p>
+            <a class="card-link" href="v3.html">Read the engine guide →</a>
+          </article>
+          <article class="card">
+            <div class="tag">03 · run it</div>
+            <h3>Start a sample</h3>
+            <p>Run the receipt or StockItems example from the repository root using the added npm scripts.</p>
+            <div class="code-card" style="margin-top:auto">
+              <pre><code>npm install
+npm run sample
+npm run sample:stock-items</code></pre>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="callout">
+          <div class="icon" aria-hidden="true">i</div>
+          <p><strong>Version labels:</strong> the package is at semver <code>1.3.1</code>; the source implementation selected by <code>src/index.js</code> is <code>src/v3</code>. The number in the package version and the source-folder version describe different things.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <span>JSON Transformer · repository guide</span>
+    <span><a href="v3.html">V3 engine</a> · <a href="receipts.html">Receipt walkthrough</a></span>
+  </footer>
+</body>
+</html>

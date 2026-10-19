@@ -1,12 +1,12 @@
-import buildSpecElement from "../../../src/index.js";
+import transform from "../../../src/index.js";
 
-import structure from "./structure.json" with {type: 'json'};
-import data from "./data.json" with {type: 'json'};
+import source from "./structure.json" with { type: "json" };
+import recipe from "./data.json" with { type: "json" };
 
 const start = () => {
   try {
-    let specAsJsonToDom = buildSpecElement(structure, data);
-    console.log("0 : ", specAsJsonToDom);
+    const result = transform(source, recipe);
+    console.log("result:", result);
   } catch (err) {
     console.log("error : ", err);
   };
